@@ -72,7 +72,7 @@ const Index = () => {
                 <h3 className="font-playfair text-xl font-semibold text-gray-800">When</h3>
               </div>
               <p className="text-gray-600">February 14th, 2024</p>
-              <p className="text-gray-600">7:00 PM</p>
+              <p className="text-gray-600">5:00 PM</p>
             </div>
             <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-valentine-200 hover:shadow-2xl hover:bg-white/70 transition-all duration-300 transform hover:-translate-y-1">
               <div className="flex items-center space-x-3 mb-4">
