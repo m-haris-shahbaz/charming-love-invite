@@ -1,14 +1,30 @@
-
 import { useState } from "react";
 import { Heart, Calendar, MapPin } from "lucide-react";
 
 const Index = () => {
   const [rsvp, setRsvp] = useState<boolean | null>(null);
+  const [noHovered, setNoHovered] = useState(false);
+  const [yesClicks, setYesClicks] = useState(0);
+
+  const handleYesClick = () => {
+    setYesClicks(prev => prev + 1);
+    setRsvp(true);
+  };
+
+  const getYesMessage = () => {
+    const messages = [
+      "💖 You've made me the happiest person! Can't wait to see you! 💖",
+      "🥰 Yay! I'm so excited! Click again if you're super sure!",
+      "✨ Each click makes my heart flutter more! ✨",
+      "💝 I knew you'd say yes! One more click? 💝",
+      "💗 You're making this the best Valentine's ever! 💗"
+    ];
+    return messages[Math.min(yesClicks, messages.length - 1)];
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-valentine-50 to-valentine-100">
       <div className="container max-w-4xl mx-auto px-4 py-12 space-y-20">
-        {/* Header Section */}
         <header className="text-center space-y-6 animate-fadeIn">
           <div className="inline-block animate-float">
             <Heart className="w-12 h-12 text-valentine-400 animate-heartbeat" />
@@ -21,7 +37,6 @@ const Index = () => {
           </p>
         </header>
 
-        {/* Message Section */}
         <section className="space-y-8 animate-fadeIn [animation-delay:200ms]">
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-valentine-200">
             <p className="font-playfair text-xl text-gray-700 leading-relaxed">
@@ -30,7 +45,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Details Section */}
         <section className="space-y-6 animate-fadeIn [animation-delay:400ms]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-valentine-200">
@@ -52,41 +66,53 @@ const Index = () => {
           </div>
         </section>
 
-        {/* RSVP Section */}
         <section className="space-y-6 animate-fadeIn [animation-delay:600ms]">
           <h2 className="font-playfair text-3xl text-center text-valentine-600 font-semibold">
             Will You Be My Valentine?
           </h2>
-          <div className="flex justify-center space-x-4">
+          <div className="flex justify-center items-center space-x-4">
             <button
-              onClick={() => setRsvp(true)}
+              onClick={handleYesClick}
+              style={{
+                transform: `scale(${1 + Math.min(yesClicks * 0.05, 0.3)})`,
+              }}
               className={`px-8 py-3 rounded-full font-semibold transition-all duration-300 ${
                 rsvp === true
-                  ? "bg-valentine-500 text-white scale-105"
+                  ? "bg-valentine-500 text-white animate-heartbeat"
                   : "bg-white text-valentine-500 hover:bg-valentine-500 hover:text-white"
               } shadow-xl hover:shadow-valentine-200/50`}
             >
-              Yes, I'd Love To!
+              {yesClicks === 0 ? "Yes, I'd Love To!" : "Yes! Yes! Yes!"}
             </button>
-            <button
-              onClick={() => setRsvp(false)}
-              className={`px-8 py-3 rounded-full font-semibold transition-all duration-300 ${
-                rsvp === false
-                  ? "bg-gray-500 text-white"
-                  : "bg-white text-gray-500 hover:bg-gray-500 hover:text-white"
-              } shadow-xl hover:shadow-gray-200/50`}
+            
+            <div
+              onMouseEnter={() => setNoHovered(true)}
+              className={`relative transition-all duration-300 ${
+                noHovered ? "animate-fadeIn" : ""
+              }`}
             >
-              Maybe Next Time
-            </button>
+              {!noHovered ? (
+                <button
+                  className="px-8 py-3 rounded-full font-semibold bg-white text-gray-500 shadow-xl hover:shadow-gray-200/50"
+                >
+                  Maybe Next Time
+                </button>
+              ) : (
+                <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-48 text-center">
+                  <div className="bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-xl border border-valentine-200">
+                    <p className="text-valentine-500 font-medium text-sm">
+                      My heart won't take no for an answer! 💝
+                    </p>
+                  </div>
+                  <div className="w-3 h-3 bg-white/90 rotate-45 absolute -bottom-1.5 left-1/2 -translate-x-1/2 border-r border-b border-valentine-200"></div>
+                </div>
+              )}
+            </div>
           </div>
+          
           {rsvp === true && (
             <div className="text-center animate-fadeIn text-valentine-600 font-semibold mt-4">
-              💖 You've made me the happiest person! Can't wait to see you! 💖
-            </div>
-          )}
-          {rsvp === false && (
-            <div className="text-center animate-fadeIn text-gray-600 mt-4">
-              I understand. Perhaps another time then...
+              {getYesMessage()}
             </div>
           )}
         </section>
