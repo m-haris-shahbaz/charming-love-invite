@@ -1,27 +1,28 @@
-name: Deploy
+name: Deploy Vite React App to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  # Trigger deployment only on push to the main branch
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Set up Node.js
         uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Specify Node.js version
 
       - name: Install dependencies
-        uses: bahmutov/npm-install@v1
+        run: npm install
 
-      - name: Build project
-        run: npm run build
+      - name: Build the project
+        run: npm run build  # Vite build command to generate production files
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v4
@@ -30,10 +31,9 @@ jobs:
           path: ./dist
 
   deploy:
-    name: Deploy
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'  # Ensure deploy is only triggered on the main branch
 
     steps:
       - name: Download artifact
@@ -47,3 +47,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+          target_branch: gh-pages  # Specify gh-pages as the target branch
